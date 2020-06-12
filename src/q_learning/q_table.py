@@ -1,13 +1,16 @@
 import numpy as np
 
 
-
-
 class QTable:
 
     _AMOUNT_DISCRETE_STATES = 20
     _LEARNING_RATE = 0.1
     _DISCOUNT = 0.95  # Measure of how important we find future rewards over current rewards
+
+    _INITIAL_EPSILON = 0.5  # Measure of how much randomness included in decision making (exploration)
+    _EPSILON_DECAY_VALUE = 0.01
+    _BEGIN_EPSILON_DECAY = 1000
+    _STOP_EPSILON_DECAY = 4000
 
     def __init__(self, max_observation_values, min_observation_values, num_of_actions):
         # os is Observation Space
@@ -20,6 +23,9 @@ class QTable:
         # Generates a random Q-Value per action at discrete steps through the observation space
         self._q_table = np.random.uniform(low=-2, high=0, size=(discrete_os_steps + [num_of_actions]))
 
+        self._epsilon = self._INITIAL_EPSILON
+        self._update_count = 0
+
     def get_action(self, current_state):
         discrete_state = self._get_discrete_state(current_state)
         q_values = self._q_table[discrete_state]
@@ -29,6 +35,9 @@ class QTable:
         return action_num
 
     def update(self, new_state, new_reward, current_state, current_action):
+        self._update_count += 1
+        self._decay_epsilon()
+
         new_discrete_state = self._get_discrete_state(new_state)
         current_discrete_state = self._get_discrete_state(current_state)
 
@@ -48,3 +57,11 @@ class QTable:
 
     def _calculate_new_q_value(self, current_q, reward, max_future_q):
         return (1 - self._LEARNING_RATE)*current_q + self._LEARNING_RATE*(reward + self._DISCOUNT*max_future_q)
+
+    def _decay_epsilon(self):
+        if self._update_count < self._BEGIN_EPSILON_DECAY or self._update_count > self._STOP_EPSILON_DECAY:
+            return
+
+        self._epsilon -= self._EPSILON_DECAY_VALUE
+        if self._epsilon < 0:
+            self._epsilon = 0

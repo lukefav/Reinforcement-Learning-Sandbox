@@ -52,6 +52,10 @@ class QLearning:
         else:
             return False
 
+    def __del__(self):
+        if self._env is not None:
+            self._env.close()
+
 
 """
 Notes:
