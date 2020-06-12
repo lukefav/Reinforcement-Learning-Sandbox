@@ -16,9 +16,11 @@ def main():
     project_num = parser.parse_args().project
 
     if project_num == 1:
-        print(1)
+        print("QLearning Loading...")
         project = QLearning()
+        print("Running Project.")
         project.run()
+
     else:
         print("Incorrect project number")
 
