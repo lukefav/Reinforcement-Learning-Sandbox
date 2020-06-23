@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 
 
 class PerformanceAnalyzer:
-
     _BLOCK_SIZE = 100
 
     def __init__(self):

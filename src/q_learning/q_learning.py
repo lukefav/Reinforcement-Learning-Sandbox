@@ -1,11 +1,17 @@
 import gym
-import time
 
 from q_learning.performance_analyzer import PerformanceAnalyzer
 from q_learning.q_table import QTable
 
 
 class QLearning:
+    """
+    Summary:
+    QLearning learns how to maneuver a car in order to reach a goal at the top of a hill using a Q-Table. The simulator
+    provides position and velocity which the Q-table uses in order to make an action. Actions are move Left, do Nothing,
+    or move Right. It will render the simulation at a specified interval. Once the maximum number of episodes have been
+    reached it will stop learning and graph the performance metrics of the actor.
+    """
 
     _EPISODES = 5000
     _RENDER_PERIOD = 500
@@ -28,14 +34,14 @@ class QLearning:
 
             done = False
             episode_reward = 0
-            while not done:
+            while not done:  # Episode will terminate after a certain amount of time has elapsed
                 action = self._q_table.get_action(state)
 
                 # new_state are things sensed by environment, position and velocity
                 # reward is -1 until the car reaches the flag, then it becomes 0
                 new_state, reward, done, _ = self._env.step(action)
 
-                if not done:  # Will finish after a certain amount of time has elapsed
+                if not done:
                     # Since every frame is -1 reward, it will naturally try to achieve goal in shortest amount of time
                     self._q_table.update(new_state, reward, state, action)
                 elif new_state[0] >= self._env.goal_position:  # new_state[0] is car position

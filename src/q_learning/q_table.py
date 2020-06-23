@@ -2,7 +2,6 @@ import numpy as np
 
 
 class QTable:
-
     _AMOUNT_DISCRETE_STATES = 20
     _LEARNING_RATE = 0.1
     _DISCOUNT = 0.95  # Measure of how important we find future rewards over current rewards
